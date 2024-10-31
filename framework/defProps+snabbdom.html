@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+
+    </div>
+    <script src="../node_modules/snabbdom/dist/snabbdom.js"></script>
+    <script src="../node_modules/snabbdom/dist/snabbdom-style.js"></script>
+    
+    <script type="text/javascript">
+      const obj = {};
+      const {init, h} = snabbdom
+      // const {snabbdom_style} = snabbdom-style
+      // 1.先获取patch函数, 可以对比两个虚拟dom, 执行dom操作
+      const patch = init([
+        snabbdom_style.default
+      ]);
+      let vnode; //保存之前的虚拟dom
+      function defineReactive(obj, key, val) {
+        // 对传入的obj进行访问拦截
+        Object.defineProperty(obj, key, {
+          get() {
+            console.log('get' + key);
+            // 会产生闭包 保留了内部作用域变量value
+            return val;
+          },
+          set(newVal) {
+            if (newVal !== val) {
+              console.log('set' + key + newVal);
+              //直接对变量进行赋值 无意义？ 为什么不obj[key] = newVal;
+              //obj在外面引用了 当前的值时 是不会释放的 所以value可以保存多个key的多个值 (vue的内部细节)
+              val = newVal;
+              //更新函数
+              update();
+            }
+          }
+        })
+      }
+      // 使用虚拟dom做更新
+      function update(){
+        //id可以直接用
+        vnode = patch(vnode, h('div#app', {style:{color:'red'}}, obj.foo))
+      }
+      defineReactive(obj, 'foo', new Date().toLocaleTimeString())
+      // 执行初始化
+      vnode = patch(app, h('div#app', obj.foo))
+      console.log(vnode)
+      setInterval(() => {
+        obj.foo = new Date().toLocaleTimeString()
+      },5000)
+    </script>
+  </body>
+</html>

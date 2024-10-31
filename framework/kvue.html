@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 插值 -->
+      <p @click="onClick">{{counter}}</p>
+      <input type="text" k-model="counter">
+      <!-- 指令 -->
+      <p k-text="counter"></p>
+      <p k-html="desc"></p>
+      <a href="http://baidu.com">456</a>
+    </div>
+    <script src="compile.js"></script>
+    <script src="kvue.js"></script>
+    <script type="text/javascript">
+      const app = new KVue({
+        el:'#app',
+        data:{
+          counter:1,
+          desc:"<a href='http://baidu.com' >123</a>",
+          //desc: "<span>123</span>"
+          arr: [1,2,3]
+        },
+        methods:{
+          onClick() {
+            this.counter++
+          } 
+        },
+      })
+      /* setInterval(() => {
+        app.$data.counter++
+      },5000) */
+    </script>
+  </body>
+</html>
